@@ -98,7 +98,7 @@ The app uses three main tables (see `SQLQuery2.sql`):
 
 ## 👤 User Roles
 
-| Role        | Can do |
+| Role | Can do |
 |---          |---|
 | **Student** | Register/login, post & manage own listings, request items |
 | **Admin**   | Everything a student can, plus approve/reject requests, delete any listing, create other admins |
@@ -171,6 +171,10 @@ The app uses three main tables (see `SQLQuery2.sql`):
 
 ## 👤 Author
 
-Built by [swarnakarmakar10]
-GitHub [https://github.com/swarnakarmakar10] 
-Linkedin [www.linkedin.com/in/swarna-karmakar1]
+Built by Swarna Karmakar
+
+GitHub: 
+[https://github.com/swarnakarmakar10] 
+
+Linkedin:
+[www.linkedin.com/in/swarna-karmakar1]
