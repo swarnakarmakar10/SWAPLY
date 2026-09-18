@@ -50,6 +50,13 @@ namespace CampusMarketPlace
                 return cmd.ExecuteScalar();
             }
         }
+
+        public static DataTable GetAllAdmins()
+        {
+            string query = "SELECT Id, Username, Email, Password, CreatedBy FROM Users WHERE IsAdmin = 1 ORDER BY Id DESC";
+            return ExecuteQuery(query);
+        }
+
         public static void InsertUser(User user, bool isAdmin)
         {
             string query = "INSERT INTO Users (Username, Email, Password, IsAdmin) VALUES (@Username, @Email, @Password, @IsAdmin)";
@@ -81,6 +88,30 @@ namespace CampusMarketPlace
             DataRow row = dt.Rows[0];
             int id = Convert.ToInt32(row["Id"]);
             string email = row["Email"].ToString();
+            bool isAdmin = Convert.ToBoolean(row["IsAdmin"]);
+
+            if (isAdmin)
+                return new Admin(id, username, email, password);
+            else
+                return new User(id, username, email, password);
+        }
+        public static User GetUserByUsername(string username)
+        {
+            string query = "SELECT Id, Username, Email, Password, IsAdmin FROM Users WHERE Username=@Username";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+        new SqlParameter("@Username", username)
+            };
+
+            DataTable dt = ExecuteQuery(query, parameters);
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            DataRow row = dt.Rows[0];
+            int id = Convert.ToInt32(row["Id"]);
+            string email = row["Email"].ToString();
+            string password = row["Password"].ToString();
             bool isAdmin = Convert.ToBoolean(row["IsAdmin"]);
 
             if (isAdmin)
@@ -171,10 +202,10 @@ namespace CampusMarketPlace
                 new SqlParameter("@EquipmentType", (object)(listing as EquipmentListing)?.EquipmentType ?? DBNull.Value),
                 new SqlParameter("@Semester", (object)(listing as NoteListing)?.Semester ?? DBNull.Value),
                 new SqlParameter("@Format", (object)(listing as NoteListing)?.Format ?? DBNull.Value),
-                new SqlParameter("@ImageData", (object)listing.ImageData ?? DBNull.Value) 
+                new SqlParameter("@ImageData", (object)listing.ImageData ?? DBNull.Value)
             };
         }
-        
+
         public static void InsertTransactionRequest(TransactionRequest request, string listingType)
         {
             string query = "INSERT INTO TransactionRequests (RequesterId, ListingItemName, ListingOwnerId, ListingType, Status, RequestDate) VALUES (@RequesterId, @ListingItemName, @ListingOwnerId, @ListingType, @Status, @RequestDate)";

@@ -34,16 +34,17 @@ namespace CampusMarketPlace
             }
         }
 
-        public void RegisterUser(User user)
+        public void RegisterUser(User user, string createdBy = "Self-Registered")
         {
-            string query = @"INSERT INTO Users (Username, Email, Password, IsAdmin)
-                              VALUES (@Username, @Email, @Password, @IsAdmin)";
+            string query = @"INSERT INTO Users (Username, Email, Password, IsAdmin, CreatedBy)
+                      VALUES (@Username, @Email, @Password, @IsAdmin, @CreatedBy)";
 
             DatabaseHelper.ExecuteNonQuery(query,
                 new SqlParameter("@Username", user.Username),
                 new SqlParameter("@Email", user.Email),
                 new SqlParameter("@Password", user.Password),
-                new SqlParameter("@IsAdmin", user is Admin));
+                new SqlParameter("@IsAdmin", user is Admin),
+                new SqlParameter("@CreatedBy", createdBy));
 
             Console.WriteLine($"Registered User: {user.Username}");
         }
@@ -53,6 +54,12 @@ namespace CampusMarketPlace
         // natural key everywhere a specific row needs to be identified. This means
         // one user cannot have two listings with the exact same ItemName.
 
+
+        public void DeleteAdmin(int id)
+        {
+            string query = "DELETE FROM Users WHERE Id = @Id";
+            DatabaseHelper.ExecuteNonQuery(query, new SqlParameter("@Id", id));
+        }
         public List<Listing> Listings
         {
             get

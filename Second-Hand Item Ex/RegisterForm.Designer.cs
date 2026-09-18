@@ -225,7 +225,7 @@
             button3.TabIndex = 18;
             button3.Text = "👁️";
             button3.UseVisualStyleBackColor = false;
-            button3.Click += button3_Click;
+           
             // 
             // RegisterForm
             // 

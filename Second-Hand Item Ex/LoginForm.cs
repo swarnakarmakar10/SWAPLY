@@ -55,38 +55,34 @@ namespace Second_Hand_Item_Ex_
         }
 
 
-       
+
 
         private void button1_Click(object sender, EventArgs e)
         {
             string username = textBox1.Text.Trim();
             string password = textBox2.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                MessageBox.Show("Username is Invalid! Please Enter an username.", "InValid Input",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                MessageBox.Show("Username is Invalid! Please Enter an username.", "InValid Input",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) 
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show("Please enter both username and password.", "Login Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Information); 
-                return; 
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
-            User foundUser = DatabaseHelper.GetUserByCredentials(username, password);
+            User foundUser = DatabaseHelper.GetUserByUsername(username);
 
-            if (foundUser == null) 
+            if (foundUser == null)
             {
-                MessageBox.Show("Incorrect username or password.", "Login Failed", 
-                MessageBoxButtons.OK, MessageBoxIcon.Error); 
-                return; 
+                MessageBox.Show("Username is incorrect.", "Login Failed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (foundUser.Password != password)
+            {
+                MessageBox.Show("Password doesn't match.", "Login Failed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
             Program.CurrentUser = foundUser;
@@ -94,8 +90,6 @@ namespace Second_Hand_Item_Ex_
             MainForm mainForm = new MainForm(marketplace, foundUser);
             mainForm.Show();
             this.Hide();
-
-
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -112,6 +106,6 @@ namespace Second_Hand_Item_Ex_
             button3.Text = isHidden ? "🙈" : "👁";
         }
 
-
+       
     }
 }

@@ -16,6 +16,7 @@ namespace Second_Hand_Item_Ex_
         public BrowseListingForm(MarketPlace marketplace, User currentUser)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.marketplace = marketplace;
             this.currentUser = currentUser;
 

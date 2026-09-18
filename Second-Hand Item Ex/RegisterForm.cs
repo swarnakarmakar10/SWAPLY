@@ -88,11 +88,12 @@ namespace Second_Hand_Item_Ex_
             string username = textBox1.Text.Trim();
             string email = textBox2.Text.Trim();
             string password = textBox3.Text.Trim();
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password) || 
-                string.IsNullOrWhiteSpace(email))
+
+            if (string.IsNullOrWhiteSpace(username) || username == "Enter your Username" ||
+                 string.IsNullOrWhiteSpace(email) || email == "Enter Your Email" ||
+                 string.IsNullOrWhiteSpace(password) || password == "Enter your Password")
             {
-                MessageBox.Show("Please enter both username and password.", "Login Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please fill in username, email, and password.", "Invalid Input");
                 return;
             }
 
@@ -148,10 +149,12 @@ namespace Second_Hand_Item_Ex_
                 }
 
                 newUser = new Admin(newId, username, email, password);
+                marketplace.RegisterUser(newUser, "Self-Registered (Passkey)");
             }
             else
             {
                 newUser = new User(newId, username, email, password);
+                marketplace.RegisterUser(newUser, "Self-Registered");
             }
 
             marketplace.RegisterUser(newUser);
@@ -171,9 +174,9 @@ namespace Second_Hand_Item_Ex_
 
         private void button3_Click(object sender, EventArgs e)
         {
-            bool isHidden = textBox2.PasswordChar == '*';
+            bool isHidden = textBox3.PasswordChar == '*';
 
-            textBox2.PasswordChar = isHidden ? '\0' : '*';
+            textBox3.PasswordChar = isHidden ? '\0' : '*';
             button3.Text = isHidden ? "🙈" : "👁";
         }
     }

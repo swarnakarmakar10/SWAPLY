@@ -95,7 +95,6 @@
             button4.TabIndex = 4;
             button4.Text = "My Requests";
             button4.UseVisualStyleBackColor = false;
-            button4.Click += button4_Click_1;
             // 
             // button5
             // 
@@ -130,7 +129,6 @@
             button7.TabIndex = 7;
             button7.Text = "Create Admin";
             button7.UseVisualStyleBackColor = false;
-            button7.Click += button7_Click;
             // 
             // label2
             // 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Windows.Forms;
 using CampusMarketPlace;
 using User = CampusMarketPlace.User;
@@ -9,16 +10,22 @@ namespace Second_Hand_Item_Ex_
     {
         private MarketPlace marketplace;
         private User currentUser;
+        private MainForm mainForm;
 
-        public CreateAdminPanelForm(MarketPlace marketplace, User currentUser)
+        public CreateAdminPanelForm(MarketPlace marketplace, User currentUser, MainForm mainForm)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.marketplace = marketplace;
             this.currentUser = currentUser;
+            this.mainForm = mainForm;
+
+            LoadAdminTable();
 
             button1.Click += button1_Click; // Create Admin
             button2.Click += button2_Click; // Back
+            button3.Click += button3_Click; // Show/Hide Password
+            button4.Click += button4_Click; // Delete Admin
 
             // Placeholder behavior
             textBox1.Enter += textBox1_Enter;
@@ -28,6 +35,30 @@ namespace Second_Hand_Item_Ex_
             textBox3.Enter += textBox3_Enter;
             textBox3.Leave += textBox3_Leave;
         }
+
+        private void LoadAdminTable()
+        {
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView1.MultiSelect = false;
+            DataTable admins = DatabaseHelper.GetAllAdmins();
+
+            DataColumn noColumn = new DataColumn("No.", typeof(int));
+            admins.Columns.Add(noColumn);
+            admins.Columns["No."].SetOrdinal(0);
+
+            int rowNumber = 1;
+            foreach (DataRow row in admins.Rows)
+            {
+                row["No."] = rowNumber;
+                rowNumber++;
+            }
+
+            dataGridView1.DataSource = admins;
+            dataGridView1.Columns["Id"].Visible = false;
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.Columns["No."].Width = 40;
+        }
+
         private void textBox1_Enter(object sender, EventArgs e)
         {
             if (textBox1.Text == "Enter your Username")
@@ -63,7 +94,7 @@ namespace Second_Hand_Item_Ex_
         {
             if (string.IsNullOrWhiteSpace(textBox3.Text))
             {
-                textBox3.PasswordChar = '\0'; // unmask so placeholder text is readable
+                textBox3.PasswordChar = '\0';
                 textBox3.Text = "Enter your Password";
             }
         }
@@ -100,35 +131,82 @@ namespace Second_Hand_Item_Ex_
 
             int newId = marketplace.Users.Count + 1;
             Admin newAdmin = new Admin(newId, username, email, password);
-            marketplace.RegisterUser(newAdmin);
+            marketplace.RegisterUser(newAdmin, currentUser.Username);
 
             MessageBox.Show("New admin account created: " + username, "Success");
 
             textBox1.Clear();
             textBox2.Clear();
             textBox3.Clear();
+
+            LoadAdminTable();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            MainForm mainForm = new MainForm(marketplace, currentUser);
+            this.Hide();
             mainForm.Show();
-            this.Close();
         }
 
-        private void label3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
+            bool isHidden = textBox3.PasswordChar == '*';
 
+            textBox3.PasswordChar = isHidden ? '\0' : '*';
+            button3.Text = isHidden ? "🙈" : "👁";
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e)
         {
+            if (dataGridView1.CurrentRow == null)
+            {
+                MessageBox.Show("Please select an admin to delete.", "No Selection");
+                return;
+            }
 
-        }
+            DataGridViewRow selectedRow = dataGridView1.CurrentRow;
+            int selectedId = Convert.ToInt32(selectedRow.Cells["Id"].Value);
+            string selectedUsername = selectedRow.Cells["Username"].Value.ToString();
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
+            int adminCount = 0;
+            foreach (User u in marketplace.Users)
+            {
+                if (u is Admin)
+                    adminCount++;
+            }
 
+            if (adminCount <= 1)
+            {
+                MessageBox.Show("Cannot delete the last remaining admin account.", "Action Blocked");
+                return;
+            }
+
+            DialogResult confirm = MessageBox.Show(
+                "Are you sure you want to delete admin \"" + selectedUsername + "\"?",
+                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirm != DialogResult.Yes)
+                return;
+
+            marketplace.DeleteAdmin(selectedId);
+
+            bool deletedSelf = selectedUsername == currentUser.Username;
+
+            if (deletedSelf)
+            {
+                MessageBox.Show("Your admin account has been deleted. You will be logged out.",
+                    "Account Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                LoginForm loginForm = new LoginForm();
+                loginForm.Show();
+                mainForm.Close();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Admin \"" + selectedUsername + "\" has been deleted.", "Success");
+                LoadAdminTable();
+            }
         }
     }
 }

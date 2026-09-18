@@ -29,14 +29,20 @@ namespace Second_Hand_Item_Ex_
 
             bool hasAny = false;
 
+            var myRequests = new System.Collections.Generic.List<TransactionRequest>();
             foreach (TransactionRequest request in marketplace.Requests)
             {
                 if (request.Requester.Id == currentUser.Id)
-                {
-                    hasAny = true;
-                    Panel card = CreateRequestCard(request);
-                    flowLayoutPanel1.Controls.Add(card);
-                }
+                    myRequests.Add(request);
+            }
+
+            myRequests.Sort((a, b) => b.RequestDate.CompareTo(a.RequestDate));
+
+            foreach (TransactionRequest request in myRequests)
+            {
+                hasAny = true;
+                Panel card = CreateRequestCard(request);
+                flowLayoutPanel1.Controls.Add(card);
             }
 
             if (!hasAny)

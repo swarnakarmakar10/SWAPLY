@@ -27,42 +27,42 @@ namespace Second_Hand_Item_Ex_
             button4.Click += button4_Click; // My Request
             button5.Click += button5_Click; // Admin Panel
             button6.Click += button6_Click; // Log Out
-            button7.Click += button7_Click;
+            button7.Click += button7_Click; // Create Admin
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             BrowseListingForm browseForm = new BrowseListingForm(marketplace, currentUser);
             browseForm.Show();
-            this.Hide();
+            this.Close();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             PostListingForm postForm = new PostListingForm(marketplace, currentUser);
             postForm.Show();
-            this.Hide();
+            this.Close();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             MyListingsForm myListingsForm = new MyListingsForm(marketplace, currentUser);
             myListingsForm.Show();
-            this.Hide();
+            this.Close();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             MyRequestsForm myRequestsForm = new MyRequestsForm(marketplace, currentUser);
             myRequestsForm.Show();
-            this.Hide();
+            this.Close();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             AdminPanelForm adminForm = new AdminPanelForm(marketplace, currentUser);
             adminForm.Show();
-            this.Hide();
+            this.Close();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -72,16 +72,11 @@ namespace Second_Hand_Item_Ex_
             this.Close();
         }
 
-        private void button4_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
         private void button7_Click(object sender, EventArgs e)
         {
-            CreateAdminPanelForm createAdmin = new CreateAdminPanelForm(marketplace, currentUser);
+            CreateAdminPanelForm createAdmin = new CreateAdminPanelForm(marketplace, currentUser, this);
             createAdmin.Show();
-            this.Close();
+            this.Hide();
         }
     }
 }
