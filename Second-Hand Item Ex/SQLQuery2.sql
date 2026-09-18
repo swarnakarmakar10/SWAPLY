@@ -1,0 +1,43 @@
+  CREATE DATABASE MyDB;
+GO
+USE MyDB;
+GO
+CREATE TABLE Users (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(50) NOT NULL,
+    Email NVARCHAR(100) NOT NULL,
+    Password NVARCHAR(50) NOT NULL,
+    IsAdmin BIT NOT NULL DEFAULT 0
+);
+CREATE TABLE Listings (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    ItemName NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(255),
+    OwnerId INT NOT NULL,
+    DatePosted DATETIME NOT NULL,
+    Status NVARCHAR(20) NOT NULL,
+    Category NVARCHAR(20) NOT NULL,
+    CourseCode NVARCHAR(20),
+    Author NVARCHAR(100),
+    Edition NVARCHAR(20),
+    Condition NVARCHAR(50),
+    EquipmentType NVARCHAR(50),
+    Semester NVARCHAR(20),
+    Format NVARCHAR(50),
+    FOREIGN KEY (OwnerId) REFERENCES Users(Id)
+);
+GO
+CREATE TABLE TransactionRequests (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    RequesterId INT NOT NULL,
+    ListingId INT NOT NULL,
+    Status NVARCHAR(20) NOT NULL,
+    RequestDate DATETIME NOT NULL,
+    FOREIGN KEY (RequesterId) REFERENCES Users(Id),
+    FOREIGN KEY (ListingId) REFERENCES Listings(Id)
+);
+ALTER TABLE Listings ADD ImageData VARBINARY(MAX) NULL;
+
+   SELECT COLUMN_NAME, DATA_TYPE 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'Listings';
